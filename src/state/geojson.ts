@@ -20,8 +20,10 @@ const filter = (geo: any, query: string) => {
       properties: { navn: names },
     } = feature;
     // navn is an array because there can be multiple names
-    return (names as any[]).find(({ navn }: any) => {
-      return navn.toLowerCase().startsWith(query.toLowerCase());
+    return (names as any[]).find(({ navn, sprak }: any) => {
+      return (
+        sprak === 'nor' && navn.toLowerCase().startsWith(query.toLowerCase())
+      );
     });
   });
 
