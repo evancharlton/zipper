@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
 import { geojsonFiltered, mapState } from '../state';
 
 mapboxgl.accessToken =
