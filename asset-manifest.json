@@ -1,0 +1,22 @@
+{
+  "files": {
+    "main.css": "/zipper/static/css/main.f574ad61.chunk.css",
+    "main.js": "/zipper/static/js/main.ae162611.chunk.js",
+    "main.js.map": "/zipper/static/js/main.ae162611.chunk.js.map",
+    "runtime-main.js": "/zipper/static/js/runtime-main.824785ec.js",
+    "runtime-main.js.map": "/zipper/static/js/runtime-main.824785ec.js.map",
+    "static/js/2.30809e13.chunk.js": "/zipper/static/js/2.30809e13.chunk.js",
+    "static/js/2.30809e13.chunk.js.map": "/zipper/static/js/2.30809e13.chunk.js.map",
+    "index.html": "/zipper/index.html",
+    "precache-manifest.5a4120e5998a74e15d68655783106b1a.js": "/zipper/precache-manifest.5a4120e5998a74e15d68655783106b1a.js",
+    "service-worker.js": "/zipper/service-worker.js",
+    "static/css/main.f574ad61.chunk.css.map": "/zipper/static/css/main.f574ad61.chunk.css.map",
+    "static/js/2.30809e13.chunk.js.LICENSE.txt": "/zipper/static/js/2.30809e13.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.824785ec.js",
+    "static/js/2.30809e13.chunk.js",
+    "static/css/main.f574ad61.chunk.css",
+    "static/js/main.ae162611.chunk.js"
+  ]
+}
