@@ -1,6 +1,6 @@
 {
   "files": {
-    "main.css": "/zipper/static/css/main.fa91a461.chunk.css",
+    "main.css": "/zipper/static/css/main.75941aa6.chunk.css",
     "main.js": "/zipper/static/js/main.c78a9421.chunk.js",
     "main.js.map": "/zipper/static/js/main.c78a9421.chunk.js.map",
     "runtime-main.js": "/zipper/static/js/runtime-main.824785ec.js",
@@ -9,17 +9,17 @@
     "static/js/2.2273705e.chunk.js": "/zipper/static/js/2.2273705e.chunk.js",
     "static/js/2.2273705e.chunk.js.map": "/zipper/static/js/2.2273705e.chunk.js.map",
     "index.html": "/zipper/index.html",
-    "precache-manifest.59783ffead3b15bbb9e7a7ea88d7db3b.js": "/zipper/precache-manifest.59783ffead3b15bbb9e7a7ea88d7db3b.js",
+    "precache-manifest.315427bfdcbafa67b51eca84402ada2d.js": "/zipper/precache-manifest.315427bfdcbafa67b51eca84402ada2d.js",
     "service-worker.js": "/zipper/service-worker.js",
     "static/css/2.b4a16772.chunk.css.map": "/zipper/static/css/2.b4a16772.chunk.css.map",
-    "static/css/main.fa91a461.chunk.css.map": "/zipper/static/css/main.fa91a461.chunk.css.map",
+    "static/css/main.75941aa6.chunk.css.map": "/zipper/static/css/main.75941aa6.chunk.css.map",
     "static/js/2.2273705e.chunk.js.LICENSE.txt": "/zipper/static/js/2.2273705e.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.824785ec.js",
     "static/css/2.b4a16772.chunk.css",
     "static/js/2.2273705e.chunk.js",
-    "static/css/main.fa91a461.chunk.css",
+    "static/css/main.75941aa6.chunk.css",
     "static/js/main.c78a9421.chunk.js"
   ]
 }
