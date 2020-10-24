@@ -25,6 +25,7 @@ const SearchInput = ({ placeholder, value, onChange }: Props) => {
       onChange={onChangeHandler}
       placeholder={placeholder}
       value={value}
+      autoFocus
     />
   );
 };
