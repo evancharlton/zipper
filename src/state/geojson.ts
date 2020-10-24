@@ -61,9 +61,14 @@ export const geojsonFeatures = selector({
         id: lokalid,
       };
     });
-    return features.sort(({ name: nameA }, { name: nameB }) =>
-      nameA.localeCompare(nameB)
-    );
+    return features
+      .sort(({ name: nameA }, { name: nameB }) => nameA.localeCompare(nameB))
+      .filter((value, index, arr) => {
+        if (index === 0) {
+          return true;
+        }
+        return value.name !== arr[index - 1].name;
+      });
   },
 });
 
