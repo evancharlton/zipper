@@ -1,0 +1,17 @@
+.kommunes {
+  overflow: auto;
+}
+
+.kommune-list {
+  list-style-type: none;
+  padding-inline-start: 16px;
+}
+
+.kommune-list li button {
+  font-size: 14pt;
+  font-weight: 700;
+  color: #fffa;
+  margin: 4px;
+  border: 0px;
+  background-color: transparent;
+}
