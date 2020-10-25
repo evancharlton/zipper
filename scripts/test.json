@@ -1,0 +1,67 @@
+{
+  "type": "FeatureCollection",
+  "name": "Postnummerområde",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:EPSG::25833"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "gml_id": "id6bb5e179-1652-4380-97c3-dc1d7ab08e1d",
+        "lokalId": "a2bceb00-027a-4555-92ff-774e36b72392",
+        "navnerom": "http://skjema.geonorge.no/SOSI/produktspesifikasjon/Postnummeromrader/20180215",
+        "versjonId": 20180215,
+        "datauttaksdato": "2020-09-28T06:08:33",
+        "opphav": "Posten Norge/Kartverket",
+        "målemetode": 55,
+        "nøyaktighet": 1500,
+        "postnummer": "0790",
+        "poststed": "OSLO",
+        "kommune": 301
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [1, 1],
+            [2, 2],
+            [3, 3],
+            [0, 0],
+            [1, 1]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "gml_id": "id81554cba-b024-415a-b867-059b9de9af7f",
+        "lokalId": "05705f3d-c1a6-4164-aa18-34942b72fe10",
+        "navnerom": "http://skjema.geonorge.no/SOSI/produktspesifikasjon/Postnummeromrader/20180215",
+        "versjonId": 20180215,
+        "datauttaksdato": "2020-09-28T06:08:34",
+        "opphav": "Posten Norge/Kartverket",
+        "målemetode": 82,
+        "postnummer": "0791",
+        "poststed": "OSLO",
+        "kommune": 301
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [0, 0],
+            [3, 3],
+            [4, 4],
+            [5, 5],
+            [0, 0]
+          ]
+        ]
+      }
+    }
+  ]
+}

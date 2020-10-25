@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { kommuneState } from './kommune';
+import { kommuneState, nummerState } from './filter';
 
 export const geojsonState = atom({
   key: 'geojson',
@@ -10,7 +10,7 @@ export const geojsonState = atom({
   },
 });
 
-const filter = (geo: any, query: string) => {
+const kommuneFilter = (geo: any, query: string) => {
   const copy = {
     ...geo,
   };
@@ -30,13 +30,30 @@ const filter = (geo: any, query: string) => {
   return copy;
 };
 
+const nummerFilter = (geo: any, query: string) => {
+  const copy = {
+    ...geo,
+  };
+
+  copy.features = geo.features.filter((feature: any) => {
+    return feature.properties.postnummer.startsWith(query);
+  });
+
+  return copy;
+};
+
 export const geojsonFiltered = selector({
   key: 'geojson-filtered',
   get: ({ get }) => {
     const state = get(geojsonState);
-    const query = get(kommuneState);
-    if (query) {
-      return filter(state, query);
+    const kommuneQuery = get(kommuneState);
+    if (kommuneQuery) {
+      return kommuneFilter(state, kommuneQuery);
+    }
+
+    const nummerQuery = get(nummerState);
+    if (nummerQuery) {
+      return nummerFilter(state, nummerQuery);
     }
 
     return state;
@@ -53,9 +70,9 @@ export const geojsonFeatures = selector({
   get: ({ get }) => {
     const filtered = get(geojsonFiltered);
     const features: SimpleFeature[] = filtered.features.map((feature: any) => {
-      const { lokalid, navn: names } = feature.properties;
-      const result =
-        names.find(({ sprak }: any) => sprak === 'nor') ?? names[0];
+      const { lokalid = 0, navn: names = [] } = feature.properties;
+      const result = names.find(({ sprak }: any) => sprak === 'nor') ??
+        names[0] ?? { navn: '404' };
       return {
         name: result.navn,
         id: lokalid,

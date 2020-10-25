@@ -1,17 +1,19 @@
 import React from 'react';
 import { useRecoilState } from 'recoil';
 import SearchInput from './SearchInput';
-import { kommuneState } from '../state';
+import { nummerState } from '../state';
 
 const SearchLayer = () => {
-  const [kommuneQuery, setKommuneQuery] = useRecoilState(kommuneState);
+  const [nummerQuery, setNummerQuery] = useRecoilState(nummerState);
 
   return (
-    <SearchInput
-      placeholder="Kommune"
-      value={kommuneQuery}
-      onChange={setKommuneQuery}
-    />
+    <>
+      <SearchInput
+        placeholder="Postnummer"
+        value={nummerQuery}
+        onChange={setNummerQuery}
+      />
+    </>
   );
 };
 

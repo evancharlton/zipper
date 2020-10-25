@@ -2,7 +2,6 @@ import React, { useEffect } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import { geojsonState, mapState } from './state';
 import ForkMe from './ForkMe';
-import KommuneList from './KommuneList';
 import LoadingLayer from './LoadingLayer';
 import MapDisplay from './MapDisplay';
 import SearchLayer from './SearchLayer';
@@ -19,7 +18,7 @@ const App = () => {
       return;
     }
 
-    fetch(`${process.env.PUBLIC_URL}/kommune.json`)
+    fetch(`${process.env.PUBLIC_URL}/postnummer.min.json`)
       .then((resp) => resp.json())
       .then((json) => setGeojson(json));
   }, [map, setGeojson]);
@@ -29,7 +28,6 @@ const App = () => {
       <MapDisplay />
       <Sidebar>
         <SearchLayer />
-        <KommuneList />
       </Sidebar>
       <LoadingLayer />
       <ForkMe />

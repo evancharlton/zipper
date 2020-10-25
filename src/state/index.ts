@@ -4,5 +4,5 @@ export {
   geojsonLoaded,
   geojsonState,
 } from './geojson';
-export { kommuneState } from './kommune';
+export { kommuneState, nummerState } from './filter';
 export { mapState } from './map';

@@ -1,8 +1,11 @@
 # Zipper
 
 This is a fun project to explore the layout of Norway's geopolitical zones.
-Originally I wanted to explore the zip codes ("postnummer") but I couldn't find a good data set.
-I found a good data set for the counties ("kommuner") on [geonorge], however!
-So here we are -- enjoy!
+This is the result of linking a data set from [geonorge] with a mapping library from [mapbox] by using [React].
+
+Enjoy!
 
 [geonorge]: https://www.geonorge.no/
+[react]: https://reactjs.org/
+[mapbox]: https://mapbox.com/
+

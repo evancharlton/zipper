@@ -63,7 +63,7 @@ geojson.features = geojson.features.map((feature) => {
 });
 
 fs.writeFileSync(
-  `${__dirname}/../public/${input}.json`,
+  `${__dirname}/../public/${args[3] || input}.json`,
   JSON.stringify(geojson, null, 2)
 );
 process.exit(0);
