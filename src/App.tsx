@@ -5,7 +5,6 @@ import ForkMe from './ForkMe';
 import LoadingLayer from './LoadingLayer';
 import MapDisplay from './MapDisplay';
 import SearchLayer from './SearchLayer';
-import Sidebar from './Sidebar';
 
 import './App.css';
 
@@ -26,9 +25,7 @@ const App = () => {
   return (
     <>
       <MapDisplay />
-      <Sidebar>
-        <SearchLayer />
-      </Sidebar>
+      <SearchLayer />
       <LoadingLayer />
       <ForkMe />
     </>
