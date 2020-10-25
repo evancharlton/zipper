@@ -17,7 +17,7 @@ const App = () => {
       return;
     }
 
-    fetch(`${process.env.PUBLIC_URL}/07xx.json`)
+    fetch(`${process.env.PUBLIC_URL}/data/xxxx.json`)
       .then((resp) => resp.json())
       .then((json) => setGeojson(json));
   }, [map, setGeojson]);
