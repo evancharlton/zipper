@@ -76,7 +76,7 @@ const cap = (
   ];
 };
 
-export const geoBounds = selector<LngLatBoundsLike>({
+export const geoBounds = selector<LngLatBoundsLike | null>({
   key: 'geo-bounds',
   get: ({ get }) => {
     const query = get(nummerState);
@@ -84,6 +84,10 @@ export const geoBounds = selector<LngLatBoundsLike>({
       return NORWAY;
     }
     const results: Polygon[] = get(geoResults);
+    if (results.length === 0) {
+      return null;
+    }
+
     // @ts-ignore
     const boundingBox: LngLatBoundsLike = results.reduce((acc, polygon) => {
       const polygonBounds: nn = polygon.reduce(

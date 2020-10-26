@@ -75,7 +75,9 @@ const MapDisplay = () => {
       return;
     }
 
-    map.fitBounds(bounds as LngLatBoundsLike);
+    if (bounds) {
+      map.fitBounds(bounds as LngLatBoundsLike);
+    }
   }, [map, bounds]);
 
   return (
