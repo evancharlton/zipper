@@ -1,15 +1,6 @@
 import { atom, selector } from 'recoil';
 import { nummerPattern } from './filter';
 
-export const geojsonState = atom({
-  key: 'geojson',
-  default: {
-    type: 'FeatureCollection' as const,
-    features: [],
-    pending: true,
-  },
-});
-
 const nummerFilter = (geo: any, query: string) => {
   const copy = {
     ...geo,
@@ -22,6 +13,15 @@ const nummerFilter = (geo: any, query: string) => {
   return copy;
 };
 
+export const geojsonState = atom({
+  key: 'geojson',
+  default: {
+    type: 'FeatureCollection' as const,
+    features: [],
+    pending: true,
+  },
+});
+
 export const geojsonFiltered = selector({
   key: 'geojson-filtered',
   get: ({ get }) => {
@@ -33,35 +33,6 @@ export const geojsonFiltered = selector({
     }
 
     return state;
-  },
-});
-
-export type SimpleFeature = {
-  name: string;
-  id: number;
-};
-
-export const geojsonFeatures = selector({
-  key: 'geojson-features',
-  get: ({ get }) => {
-    const filtered = get(geojsonFiltered);
-    const features: SimpleFeature[] = filtered.features.map((feature: any) => {
-      const { lokalid = 0, navn: names = [] } = feature.properties;
-      const result = names.find(({ sprak }: any) => sprak === 'nor') ??
-        names[0] ?? { navn: '404' };
-      return {
-        name: result.navn,
-        id: lokalid,
-      };
-    });
-    return features
-      .sort(({ name: nameA }, { name: nameB }) => nameA.localeCompare(nameB))
-      .filter((value, index, arr) => {
-        if (index === 0) {
-          return true;
-        }
-        return value.name !== arr[index - 1].name;
-      });
   },
 });
 
