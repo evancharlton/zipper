@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
 import mapboxgl, { LngLatBoundsLike } from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
-import { geojsonFiltered, mapState } from '../state';
+import { geojsonData, mapState } from '../state';
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoiZXZhbmNoYXJsdG9uIiwiYSI6ImNrZ205b2diejAyazQzNW9jajdud2J2NnMifQ.LwYUjS8uxTr2DxYoKoGykA';
@@ -16,7 +16,7 @@ const SOURCE_ID = 'geojson-id' as const;
 const LAYER_ID = 'layer-id' as const;
 
 const MapDisplay = () => {
-  const geojson = useRecoilValue(geojsonFiltered);
+  const geojson = useRecoilValue(geojsonData);
   const setMapLoaded = useSetRecoilState(mapState);
 
   const [map, setMap] = useState<mapboxgl.Map | null>(null);

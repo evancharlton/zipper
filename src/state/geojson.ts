@@ -24,21 +24,28 @@ export const payloadLoaded = selector({
   },
 });
 
-export const geojsonFiltered = selector({
-  key: 'geojson-filtered',
+export const geoResults = selector({
+  key: 'geo-results',
   get: ({ get }) => {
     const payload = get(payloadState);
     const pattern = get(nummerPattern);
 
-    const polygons = payload[pattern];
-    if (!polygons) {
+    return payload[pattern] ?? [];
+  },
+});
+
+export const geojsonData = selector({
+  key: 'geojson-filtered',
+  get: ({ get }) => {
+    const results = get(geoResults);
+    if (results.length === 0) {
       return PLACEHOLDER_GEOJSON;
     }
 
     return {
       type: 'FeatureCollection' as const,
       name: 'Zipper' as const,
-      features: polygons.map((polygon) => ({
+      features: results.map((polygon) => ({
         type: 'Feature' as const,
         properties: {},
         geometry: {
