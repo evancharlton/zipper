@@ -1,7 +1,28 @@
 const fs = require('fs');
 const v8 = require('v8');
 
-const discard = (input: any): [number, number][] => {
+const log = (...args: any[]): void => {
+  // console.log(...args);
+};
+
+const table = (...args: any[]): void => {
+  // console.table(...args);
+};
+
+type CoordinateList = [number, number][];
+
+type Feature = {
+  type: 'Feature';
+  properties: {
+    postnummer: string;
+  };
+  geometry: {
+    type: 'Polygon';
+    coordinates: [CoordinateList];
+  };
+};
+
+const discard = (prefix: string, input: any): Feature[] => {
   const intersection = <T>(a: Set<T>, b: Set<T>): Set<T> => {
     const i = new Set<T>();
     a.forEach((v) => {
@@ -119,7 +140,7 @@ const discard = (input: any): [number, number][] => {
     }
   );
 
-  console.table(graph);
+  table(graph);
 
   // Step 2: Build the edges between all of the vertexes
   const edges: { [xyxy: string]: Edge } = {};
@@ -139,7 +160,7 @@ const discard = (input: any): [number, number][] => {
     });
   });
 
-  console.table(edges);
+  table(edges);
 
   // Step 3: Find the shared edges. If an edge is shared, then it can be removed
   // from the graph entirely.
@@ -150,7 +171,7 @@ const discard = (input: any): [number, number][] => {
     }
   });
 
-  console.table(sharedEdges);
+  table(sharedEdges);
 
   // Step 4: Remove them from the graph
   const prunedGraph: { [xy: string]: Vertex } = v8.deserialize(
@@ -171,28 +192,31 @@ const discard = (input: any): [number, number][] => {
       delete prunedGraph[vertexId];
     });
 
-  console.table(prunedGraph);
+  table(prunedGraph);
 
   // Step 5: Reassemble the graph
-  const coordinateList: [number, number][] = [];
-  const addedVertexes: { [xy: string]: boolean } = {};
+  const createdFeatures: Feature[] = [];
+  let coordinateList: CoordinateList = [];
   // Pick a starting point -- it doesn't matter which one.
   const startingKey = Object.keys(prunedGraph)[0];
 
   let currentKey = startingKey;
-  do {
-    console.log(`Processing ${currentKey} ...`);
+  while (Object.keys(prunedGraph).length > 0) {
+    log(`Processing ${currentKey} ...`);
 
     const currentVertex = prunedGraph[currentKey];
+
+    // We've pulled it out of the graph; prune the key
+    delete prunedGraph[currentKey];
+
     coordinateList.push([currentVertex.x, currentVertex.y]);
-    addedVertexes[currentKey] = true;
     let nextVertexId: string | undefined = undefined;
     currentVertex.neighbors.forEach((vertexId) => {
       if (nextVertexId) {
         // We already chose one.
         return;
       }
-      if (addedVertexes[vertexId]) {
+      if (!prunedGraph[vertexId]) {
         // We've already processed this one.
         return;
       }
@@ -200,25 +224,33 @@ const discard = (input: any): [number, number][] => {
     });
 
     if (nextVertexId === undefined) {
-      // We've processed everything!!
-      break;
+      // Close out the feature.
+      createdFeatures.push(
+        createFeature(`${prefix}-${createdFeatures.length}`, coordinateList)
+      );
+      // Clear the array
+      coordinateList = [];
+
+      // And then pick a new starting point -- we have a disconnected graph.
+      nextVertexId = Object.keys(prunedGraph).filter(Boolean)[0];
+      log('Disconnected graph; starting a new polygon');
     }
 
     currentKey = nextVertexId;
-  } while (currentKey !== startingKey);
+  }
 
   // Push the final one just to complete the loop
   coordinateList.push(coordinateList[0]);
 
-  console.table(coordinateList);
+  table(coordinateList);
 
-  return coordinateList;
+  return createdFeatures;
 };
 
 const createFeature = (
   name: string,
-  coordinateList: [number, number][]
-): object => ({
+  coordinateList: CoordinateList
+): Feature => ({
   type: 'Feature',
   properties: {
     postnummer: name,
@@ -229,11 +261,11 @@ const createFeature = (
   },
 });
 
-const createGeojson = (name: string, features: object[]): object => {
+const createGeojson = (name: string, features: Feature[]): object => {
   return {
     type: 'FeatureCollection',
     name: name,
-    features,
+    features: features,
   };
 };
 
@@ -248,8 +280,16 @@ const getFilteredData = (prefix: string) => ({
 });
 
 const geojson = createGeojson('xxxx', [
-  createFeature('0xxx', discard(getFilteredData('0'))),
-  createFeature('1xxx', discard(getFilteredData('1'))),
+  ...discard('0xxx', getFilteredData('0')),
+  ...discard('1xxx', getFilteredData('1')),
+  ...discard('2xxx', getFilteredData('2')),
+  ...discard('3xxx', getFilteredData('3')),
+  ...discard('4xxx', getFilteredData('4')),
+  ...discard('5xxx', getFilteredData('5')),
+  ...discard('6xxx', getFilteredData('6')),
+  ...discard('7xxx', getFilteredData('7')),
+  ...discard('8xxx', getFilteredData('8')),
+  ...discard('9xxx', getFilteredData('9')),
 ]);
 
 fs.writeFileSync(
