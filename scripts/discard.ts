@@ -1,6 +1,8 @@
 const fs = require('fs');
 const v8 = require('v8');
 
+const data = require(`${__dirname}/../public/postnummer.min.json`);
+
 const log = (...args: any[]): void => {
   // console.log(...args);
 };
@@ -8,6 +10,8 @@ const log = (...args: any[]): void => {
 const table = (...args: any[]): void => {
   // console.table(...args);
 };
+
+let globalFeatureCounter = 0;
 
 type CoordinateList = [number, number][];
 
@@ -22,82 +26,83 @@ type Feature = {
   };
 };
 
-const discard = (prefix: string, input: any): Feature[] => {
-  const intersection = <T>(a: Set<T>, b: Set<T>): Set<T> => {
-    const i = new Set<T>();
-    a.forEach((v) => {
-      if (b.has(v)) {
-        i.add(v);
-      }
-    });
-    return i;
-  };
+type Vertex = {
+  x: number;
+  y: number;
+  neighbors: Set<string>; // xy
+  polygonIds: Set<number>; // polygons which own this
+};
 
-  const { features } = input;
+const isVertex = (item: unknown): item is Vertex => {
+  return !!(item as Vertex).neighbors;
+};
+
+type Edge = {
+  startVertexId: string;
+  endVertexId: string;
+  polygonIds: Set<number>;
+};
+
+const isEdge = (item: unknown): item is Edge => {
+  return !!(item as Edge).polygonIds;
+};
+
+type Polygon = {
+  postnummer: string;
+  index: number;
+};
+
+const isPolygon = (item: unknown): item is Polygon => {
+  return !!(item as Polygon).postnummer;
+};
+
+const makeEdgeId = (a: string, b: string): string => {
+  return [a, b].sort().join(' -> ');
+};
+
+const makeId = (item: Vertex | Polygon | Edge | number[]): string => {
+  if (Array.isArray(item)) {
+    return item.map(String).join(',');
+  }
+
+  if (isPolygon(item)) {
+    return String(item.index);
+  }
+
+  if (isVertex(item)) {
+    return `${item.x},${item.y}`;
+  }
+
+  if (isEdge(item)) {
+    return makeEdgeId(item.endVertexId, item.startVertexId);
+  }
+
+  return '';
+};
+
+const intersection = <T>(a: Set<T>, b: Set<T>): Set<T> => {
+  const i = new Set<T>();
+  a.forEach((v) => {
+    if (b.has(v)) {
+      i.add(v);
+    }
+  });
+  return i;
+};
+
+const discard = (query: string, prefix: string): Feature[] => {
+  console.log(`Beginning ${query} / ${prefix} ...`);
+  const { features } = getFilteredData(prefix);
 
   if (features.length === 0) {
     return [];
   }
-
-  type Polygon = {
-    postnummer: string;
-    index: number;
-  };
-
-  const isPolygon = (item: unknown): item is Polygon => {
-    return !!(item as Polygon).postnummer;
-  };
-
-  type Vertex = {
-    x: number;
-    y: number;
-    neighbors: Set<string>; // xy
-    polygonIds: Set<number>; // polygons which own this
-  };
-
-  const isVertex = (item: unknown): item is Vertex => {
-    return !!(item as Vertex).neighbors;
-  };
-
-  type Edge = {
-    startVertexId: string;
-    endVertexId: string;
-    polygonIds: Set<number>;
-  };
-
-  const isEdge = (item: unknown): item is Edge => {
-    return !!(item as Edge).polygonIds;
-  };
 
   // Step 1: Build the graph
 
   const polygons: { [index: number]: Polygon } = {};
 
   const graph: { [xy: string]: Vertex } = {};
-
-  const makeEdgeId = (a: string, b: string): string => {
-    return [a, b].sort().join(' -> ');
-  };
-
-  const makeId = (item: Vertex | Polygon | Edge | number[]): string => {
-    if (Array.isArray(item)) {
-      return item.map(String).join(',');
-    }
-
-    if (isPolygon(item)) {
-      return String(item.index);
-    }
-
-    if (isVertex(item)) {
-      return `${item.x},${item.y}`;
-    }
-
-    if (isEdge(item)) {
-      return makeEdgeId(item.endVertexId, item.startVertexId);
-    }
-
-    return '';
-  };
 
   features.forEach(
     (
@@ -226,8 +231,12 @@ const discard = (prefix: string, input: any): Feature[] => {
     if (nextVertexId === undefined) {
       // Close out the feature.
       createdFeatures.push(
-        createFeature(`${prefix}-${createdFeatures.length}`, coordinateList)
+        createFeature(
+          `${query}-${prefix}-${globalFeatureCounter}`,
+          coordinateList
+        )
       );
+      globalFeatureCounter += 1;
       // Clear the array
       coordinateList = [];
 
@@ -269,9 +278,6 @@ const createGeojson = (name: string, features: Feature[]): object => {
   };
 };
 
-// Generate the patterns we want
-const data = require(`${__dirname}/../public/postnummer.min.json`);
-
 const getFilteredData = (prefix: string) => ({
   ...data,
   features: data.features.filter((feature: any) => {
@@ -279,20 +285,33 @@ const getFilteredData = (prefix: string) => ({
   }),
 });
 
-const geojson = createGeojson('xxxx', [
-  ...discard('0xxx', getFilteredData('0')),
-  ...discard('1xxx', getFilteredData('1')),
-  ...discard('2xxx', getFilteredData('2')),
-  ...discard('3xxx', getFilteredData('3')),
-  ...discard('4xxx', getFilteredData('4')),
-  ...discard('5xxx', getFilteredData('5')),
-  ...discard('6xxx', getFilteredData('6')),
-  ...discard('7xxx', getFilteredData('7')),
-  ...discard('8xxx', getFilteredData('8')),
-  ...discard('9xxx', getFilteredData('9')),
-]);
+const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const features: Feature[] = [];
+
+// Create the zero-level polygons
+digits.forEach((zero) => {
+  features.push(...discard(`xxxx`, zero));
+
+  digits.forEach((one) => {
+    features.push(...discard(`${zero}xxx`, `${zero}${one}`));
+
+    digits.forEach((two) => {
+      features.push(...discard(`${zero}${one}xx`, `${zero}${one}${two}`));
+    });
+  });
+});
+// .concat(
+//   digits.reduce((f, zero) => {
+//     return [
+//       ...f,
+//       ...digits.reduce((acc, prefix) => {
+//         return [...acc, ...discard(`${zero}xxx`, getFilteredData(prefix))];
+//       }, [] as Feature[]),
+//     ];
+//   }, [] as Feature[])
+// );
 
 fs.writeFileSync(
-  `${__dirname}/../public/data/xxxx.json`,
-  JSON.stringify(geojson)
+  `${__dirname}/../public/data.min.json`,
+  JSON.stringify(createGeojson('postnummer', features))
 );

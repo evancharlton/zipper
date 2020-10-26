@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { kommuneState, nummerState } from './filter';
+import { kommuneState, nummerPattern, nummerState } from './filter';
 
 export const geojsonState = atom({
   key: 'geojson',
@@ -35,8 +35,8 @@ const nummerFilter = (geo: any, query: string) => {
     ...geo,
   };
 
-  copy.features = geo.features.filter((feature: any) => {
-    return feature.properties.postnummer.startsWith(query);
+  copy.features = geo.features.filter(({ properties: { postnummer } }: any) => {
+    return postnummer.startsWith(query);
   });
 
   return copy;
@@ -46,12 +46,8 @@ export const geojsonFiltered = selector({
   key: 'geojson-filtered',
   get: ({ get }) => {
     const state = get(geojsonState);
-    const kommuneQuery = get(kommuneState);
-    if (kommuneQuery) {
-      return kommuneFilter(state, kommuneQuery);
-    }
 
-    const nummerQuery = get(nummerState);
+    const nummerQuery = get(nummerPattern);
     if (nummerQuery) {
       return nummerFilter(state, nummerQuery);
     }
