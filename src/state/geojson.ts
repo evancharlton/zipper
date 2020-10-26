@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { nummerPattern } from './filter';
+import { nummerPattern, nummerState } from './filter';
 
 const nummerFilter = (geo: any, query: string) => {
   const copy = {
@@ -13,27 +13,20 @@ const nummerFilter = (geo: any, query: string) => {
   return copy;
 };
 
+const PLACEHOLDER_GEOJSON = {
+  type: 'FeatureCollection' as const,
+  features: [],
+  pending: true,
+} as const;
+
 export const geojsonState = atom({
   key: 'geojson',
-  default: {
-    type: 'FeatureCollection' as const,
-    features: [],
-    pending: true,
-  },
+  default: PLACEHOLDER_GEOJSON,
 });
 
-export const geojsonFiltered = selector({
-  key: 'geojson-filtered',
-  get: ({ get }) => {
-    const state = get(geojsonState);
-
-    const nummerQuery = get(nummerPattern);
-    if (nummerQuery) {
-      return nummerFilter(state, nummerQuery);
-    }
-
-    return state;
-  },
+export const geojsonLookupState = atom({
+  key: 'geojson-lookuo',
+  default: PLACEHOLDER_GEOJSON,
 });
 
 export const geojsonLoaded = selector({
@@ -41,5 +34,27 @@ export const geojsonLoaded = selector({
   get: ({ get }) => {
     const { pending } = get(geojsonState);
     return pending !== true;
+  },
+});
+
+export const geojsonLookupLoaded = selector({
+  key: 'geojson-lookup-loaded',
+  get: ({ get }) => {
+    const { pending } = get(geojsonLookupState);
+    return pending !== true;
+  },
+});
+
+export const geojsonFiltered = selector({
+  key: 'geojson-filtered',
+  get: ({ get }) => {
+    const nummerInput = get(nummerState);
+    if (nummerInput.length === 4) {
+      return get(geojsonState);
+    }
+
+    const pattern = get(nummerPattern);
+    console.log(`TCL: pattern`, pattern);
+    return nummerFilter(get(geojsonState), pattern);
   },
 });
