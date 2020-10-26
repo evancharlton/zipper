@@ -1,5 +1,7 @@
+import { LngLatBoundsLike } from 'mapbox-gl';
 import { atom, selector } from 'recoil';
-import { nummerPattern } from './filter';
+import { NORWAY } from '../constants';
+import { nummerPattern, nummerState } from './filter';
 
 type XYCoordinate = [number, number];
 type Polygon = XYCoordinate[];
@@ -54,5 +56,50 @@ export const geojsonData = selector({
         },
       })),
     };
+  },
+});
+
+type nn = [[number, number], [number, number]];
+
+const BOUNDS: nn = [
+  [Number.MIN_SAFE_INTEGER, Number.MIN_SAFE_INTEGER] as [number, number],
+  [Number.MAX_SAFE_INTEGER, Number.MAX_SAFE_INTEGER] as [number, number],
+];
+
+const cap = (
+  [[westA, southA], [eastA, northA]]: nn,
+  [[westB, southB], [eastB, northB]]: nn
+): LngLatBoundsLike => {
+  return [
+    [Math.max(westA, westB), Math.max(southA, southB)],
+    [Math.min(eastA, eastB), Math.min(northA, northB)],
+  ];
+};
+
+export const geoBounds = selector<LngLatBoundsLike>({
+  key: 'geo-bounds',
+  get: ({ get }) => {
+    const query = get(nummerState);
+    if (!query) {
+      return NORWAY;
+    }
+    const results: Polygon[] = get(geoResults);
+    // @ts-ignore
+    const boundingBox: LngLatBoundsLike = results.reduce((acc, polygon) => {
+      const polygonBounds: nn = polygon.reduce(
+        ([[west, south], [east, north]], xy) => {
+          const [x, y] = xy as [number, number];
+          return [
+            [Math.max(west, x), Math.max(south, y)],
+            [Math.min(east, x), Math.min(north, y)],
+          ];
+        },
+        BOUNDS
+      );
+      // @ts-ignore
+      return cap(acc, polygonBounds);
+    }, BOUNDS as nn);
+
+    return boundingBox;
   },
 });

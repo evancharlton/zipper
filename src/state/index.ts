@@ -1,8 +1,9 @@
 export {
+  geoBounds,
   geojsonData,
   geoResults,
-  payloadState,
   payloadLoaded,
+  payloadState,
 } from './geojson';
 export { nummerState, nummerPattern } from './filter';
 export { mapState } from './map';
