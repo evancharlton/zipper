@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import { kommuneState, nummerPattern, nummerState } from './filter';
+import { nummerPattern } from './filter';
 
 export const geojsonState = atom({
   key: 'geojson',
@@ -9,26 +9,6 @@ export const geojsonState = atom({
     pending: true,
   },
 });
-
-const kommuneFilter = (geo: any, query: string) => {
-  const copy = {
-    ...geo,
-  };
-
-  copy.features = geo.features.filter((feature: any) => {
-    const {
-      properties: { navn: names },
-    } = feature;
-    // navn is an array because there can be multiple names
-    return (names as any[]).find(({ navn, sprak }: any) => {
-      return (
-        sprak === 'nor' && navn.toLowerCase().startsWith(query.toLowerCase())
-      );
-    });
-  });
-
-  return copy;
-};
 
 const nummerFilter = (geo: any, query: string) => {
   const copy = {
