@@ -3,12 +3,12 @@ import buildEdges from './build-edges';
 import buildGraph from './build-graph';
 import findSharedEdges from './find-shared-edges';
 import pruneGraph from './prune-graph';
-import { Feature } from './types';
+import { CoordinateList, Feature } from './types';
 import fs from 'fs';
 
-const data = require(`${__dirname}/../public/postnummer.min.json`);
+const data = require(`${__dirname}/../../public/postnummer.min.json`);
 
-const discard = (query: string, prefix: string): Feature[] => {
+const discard = (query: string, prefix: string): CoordinateList[] => {
   console.log(`Beginning ${query} / ${prefix} ...`);
   const { features } = getFilteredData(prefix);
 
@@ -30,17 +30,7 @@ const discard = (query: string, prefix: string): Feature[] => {
   const prunedGraph = pruneGraph(graph, sharedEdges);
 
   // Step 5: Reassemble the graph
-  const assembly = assembleGraph(query, prefix, prunedGraph);
-
-  return assembly;
-};
-
-const createGeojson = (name: string, features: Feature[]): object => {
-  return {
-    type: 'FeatureCollection',
-    name: name,
-    features: features,
-  };
+  return assembleGraph(prunedGraph);
 };
 
 const getFilteredData = (prefix: string) => ({
@@ -50,23 +40,38 @@ const getFilteredData = (prefix: string) => ({
   }),
 });
 
-const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const features: Feature[] = [];
+type DataPayload = { [query: string]: CoordinateList[] };
 
-// Create the zero-level polygons
+const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const payload: DataPayload = {};
+
 digits.forEach((zero) => {
-  features.push(...discard(`xxxx`, zero));
+  const q0 = 'xxxx';
+  payload[q0] = (payload[q0] ?? []).concat(discard(q0, zero));
 
   digits.forEach((one) => {
-    features.push(...discard(`${zero}xxx`, `${zero}${one}`));
+    const q1 = `${zero}xxx`;
+    payload[q1] = (payload[q1] ?? []).concat(discard(q1, `${zero}${one}`));
 
     digits.forEach((two) => {
-      features.push(...discard(`${zero}${one}xx`, `${zero}${one}${two}`));
+      const q2 = `${zero}${one}xx`;
+      payload[q2] = (payload[q2] ?? []).concat(
+        discard(q2, `${zero}${one}${two}`)
+      );
+
+      digits.forEach((three) => {
+        const q3 = `${zero}${one}${two}x`;
+        const polys = discard(q3, `${zero}${one}${two}${three}`);
+        payload[q3] = (payload[q3] ?? []).concat(polys);
+
+        const q4 = `${zero}${one}${two}${three}`;
+        payload[q4] = polys;
+      });
     });
   });
 });
 
 fs.writeFileSync(
-  `${__dirname}/../public/clustered.json`,
-  JSON.stringify(createGeojson('postnummer', features), null, 2)
+  `${__dirname}/../../public/clustered.json`,
+  JSON.stringify(payload)
 );

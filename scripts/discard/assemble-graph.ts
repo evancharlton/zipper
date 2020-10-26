@@ -1,11 +1,10 @@
-import { createFeature } from './creators';
 import { log, table } from './logging';
-import { CoordinateList, Feature, Graph } from './types';
+import { CoordinateList, Graph } from './types';
 
 let globalFeatureCounter = 0;
 
-export default (query: string, prefix: string, prunedGraph: Graph) => {
-  const features: Feature[] = [];
+export default (prunedGraph: Graph) => {
+  const polygons: CoordinateList[] = [];
   let coordinateList: CoordinateList = [];
   // Pick a starting point -- it doesn't matter which one.
   const startingKey = Object.keys(prunedGraph)[0];
@@ -35,12 +34,9 @@ export default (query: string, prefix: string, prunedGraph: Graph) => {
 
     if (nextVertexId === undefined) {
       // Close out the feature.
-      features.push(
-        createFeature(
-          `${query}-${prefix}-${globalFeatureCounter}`,
-          coordinateList
-        )
-      );
+      // @ts-ignore
+      coordinateList.push([...coordinateList[0]]);
+      polygons.push(coordinateList);
       globalFeatureCounter += 1;
       // Clear the array
       coordinateList = [];
@@ -53,7 +49,7 @@ export default (query: string, prefix: string, prunedGraph: Graph) => {
     currentKey = nextVertexId;
   }
 
-  table(coordinateList);
+  table(polygons);
 
-  return features;
+  return polygons;
 };

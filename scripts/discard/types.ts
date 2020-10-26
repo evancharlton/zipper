@@ -1,4 +1,6 @@
-export type CoordinateList = [number, number][];
+export type XYCoordinate = [number, number];
+
+export type CoordinateList = XYCoordinate[];
 
 export type Feature = {
   type: 'Feature';

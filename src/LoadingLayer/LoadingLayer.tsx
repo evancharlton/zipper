@@ -1,11 +1,11 @@
 import React from 'react';
 import { useRecoilValue } from 'recoil';
-import { geojsonLoaded, mapState } from '../state';
+import { mapState, payloadLoaded } from '../state';
 import './LoadingLayer.css';
 
 const LoadingLayer = () => {
   const mapLoaded = useRecoilValue(mapState);
-  const dataLoaded = useRecoilValue(geojsonLoaded);
+  const dataLoaded = useRecoilValue(payloadLoaded);
 
   if (mapLoaded && dataLoaded) {
     return null;

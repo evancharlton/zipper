@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useSetRecoilState, useRecoilValue } from 'recoil';
-import { geojsonState, mapState } from './state';
+import { mapState, payloadState } from './state';
 import ForkMe from './ForkMe';
 import LoadingLayer from './LoadingLayer';
 import MapDisplay from './MapDisplay';
@@ -9,7 +9,7 @@ import SearchLayer from './SearchLayer';
 import './App.css';
 
 const App = () => {
-  const setGeojson = useSetRecoilState(geojsonState);
+  const setPayload = useSetRecoilState(payloadState);
   const map = useRecoilValue(mapState);
 
   useEffect(() => {
@@ -17,10 +17,15 @@ const App = () => {
       return;
     }
 
-    fetch(`${process.env.PUBLIC_URL}/data.min.json`)
+    fetch(`${process.env.PUBLIC_URL}/clustered.json`)
       .then((resp) => resp.json())
-      .then((json) => setGeojson(json));
-  }, [map, setGeojson]);
+      .then((json) => {
+        console.log('Loaded json');
+        return json;
+      })
+      .then((json) => setPayload(json))
+      .then(() => console.log('Set json'));
+  }, [map, setPayload]);
 
   return (
     <>

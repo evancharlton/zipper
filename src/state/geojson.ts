@@ -1,6 +1,11 @@
 import { atom, selector } from 'recoil';
 import { nummerPattern, nummerState } from './filter';
 
+type XYCoordinate = [number, number];
+type Polygon = XYCoordinate[];
+
+type DataLookup = { [query: string]: Polygon[] };
+
 const nummerFilter = (geo: any, query: string) => {
   const copy = {
     ...geo,
@@ -17,7 +22,20 @@ const PLACEHOLDER_GEOJSON = {
   type: 'FeatureCollection' as const,
   features: [],
   pending: true,
-} as const;
+};
+
+export const payloadState = atom({
+  key: 'data-payload',
+  default: {} as DataLookup,
+});
+
+export const payloadLoaded = selector({
+  key: 'data-payload-loaded',
+  get: ({ get }) => {
+    const payload = get(payloadState);
+    return !!payload['xxxx'];
+  },
+});
 
 export const geojsonState = atom({
   key: 'geojson',
@@ -48,13 +66,25 @@ export const geojsonLookupLoaded = selector({
 export const geojsonFiltered = selector({
   key: 'geojson-filtered',
   get: ({ get }) => {
-    const nummerInput = get(nummerState);
-    if (nummerInput.length === 4) {
-      return get(geojsonState);
+    const payload = get(payloadState);
+    const pattern = get(nummerPattern);
+
+    const polygons = payload[pattern];
+    if (!polygons) {
+      return PLACEHOLDER_GEOJSON;
     }
 
-    const pattern = get(nummerPattern);
-    console.log(`TCL: pattern`, pattern);
-    return nummerFilter(get(geojsonState), pattern);
+    return {
+      type: 'FeatureCollection' as const,
+      name: 'Zipper' as const,
+      features: polygons.map((polygon) => ({
+        type: 'Feature' as const,
+        properties: {},
+        geometry: {
+          type: 'Polygon' as const,
+          coordinates: [polygon],
+        },
+      })),
+    };
   },
 });
