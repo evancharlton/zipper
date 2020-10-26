@@ -17,14 +17,18 @@ const App = () => {
       return;
     }
 
-    fetch(`${process.env.PUBLIC_URL}/clustered.json`)
-      .then((resp) => resp.json())
-      .then((json) => {
-        console.log('Loaded json');
-        return json;
-      })
-      .then((json) => setPayload(json))
-      .then(() => console.log('Set json'));
+    const get = (level: number) =>
+      fetch(`${process.env.PUBLIC_URL}/clustered-${level}.json`)
+        .then((resp) => resp.json())
+        .then((json) =>
+          setPayload((current) => ({ ...current, ...json, level }))
+        );
+
+    get(0)
+      .then(() => get(1))
+      .then(() => get(2))
+      .then(() => get(3))
+      .then(() => get(4));
   }, [map, setPayload]);
 
   return (

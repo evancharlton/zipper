@@ -3,7 +3,7 @@ import buildEdges from './build-edges';
 import buildGraph from './build-graph';
 import findSharedEdges from './find-shared-edges';
 import pruneGraph from './prune-graph';
-import { CoordinateList, Feature } from './types';
+import { CoordinateList } from './types';
 import fs from 'fs';
 
 const data = require(`${__dirname}/../../public/postnummer.min.json`);
@@ -43,35 +43,39 @@ const getFilteredData = (prefix: string) => ({
 type DataPayload = { [query: string]: CoordinateList[] };
 
 const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-const payload: DataPayload = {};
+const payloads: DataPayload[] = [{}, {}, {}, {}, {}];
 
 digits.forEach((zero) => {
   const q0 = 'xxxx';
-  payload[q0] = (payload[q0] ?? []).concat(discard(q0, zero));
+  payloads[0][q0] = (payloads[0][q0] ?? []).concat(discard(q0, zero));
 
   digits.forEach((one) => {
     const q1 = `${zero}xxx`;
-    payload[q1] = (payload[q1] ?? []).concat(discard(q1, `${zero}${one}`));
+    payloads[1][q1] = (payloads[1][q1] ?? []).concat(
+      discard(q1, `${zero}${one}`)
+    );
 
     digits.forEach((two) => {
       const q2 = `${zero}${one}xx`;
-      payload[q2] = (payload[q2] ?? []).concat(
+      payloads[2][q2] = (payloads[2][q2] ?? []).concat(
         discard(q2, `${zero}${one}${two}`)
       );
 
       digits.forEach((three) => {
         const q3 = `${zero}${one}${two}x`;
         const polys = discard(q3, `${zero}${one}${two}${three}`);
-        payload[q3] = (payload[q3] ?? []).concat(polys);
+        payloads[3][q3] = (payloads[3][q3] ?? []).concat(polys);
 
         const q4 = `${zero}${one}${two}${three}`;
-        payload[q4] = polys;
+        payloads[4][q4] = polys;
       });
     });
   });
 });
 
-fs.writeFileSync(
-  `${__dirname}/../../public/clustered.json`,
-  JSON.stringify(payload)
-);
+payloads.forEach((payload, i) => {
+  fs.writeFileSync(
+    `${__dirname}/../../public/clustered-${i}.json`,
+    JSON.stringify(payload)
+  );
+});
