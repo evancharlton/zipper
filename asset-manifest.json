@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/zipper/static/css/main.d9315f40.chunk.css",
-    "main.js": "/zipper/static/js/main.519578f3.chunk.js",
-    "main.js.map": "/zipper/static/js/main.519578f3.chunk.js.map",
+    "main.js": "/zipper/static/js/main.bcad9b7a.chunk.js",
+    "main.js.map": "/zipper/static/js/main.bcad9b7a.chunk.js.map",
     "runtime-main.js": "/zipper/static/js/runtime-main.824785ec.js",
     "runtime-main.js.map": "/zipper/static/js/runtime-main.824785ec.js.map",
     "static/css/2.b4a16772.chunk.css": "/zipper/static/css/2.b4a16772.chunk.css",
     "static/js/2.968d9f77.chunk.js": "/zipper/static/js/2.968d9f77.chunk.js",
     "static/js/2.968d9f77.chunk.js.map": "/zipper/static/js/2.968d9f77.chunk.js.map",
     "index.html": "/zipper/index.html",
-    "precache-manifest.866da03b6e363052823940ea00f59b47.js": "/zipper/precache-manifest.866da03b6e363052823940ea00f59b47.js",
+    "precache-manifest.c26ca40912b04f518f1a656026edbf1e.js": "/zipper/precache-manifest.c26ca40912b04f518f1a656026edbf1e.js",
     "service-worker.js": "/zipper/service-worker.js",
     "static/css/2.b4a16772.chunk.css.map": "/zipper/static/css/2.b4a16772.chunk.css.map",
     "static/css/main.d9315f40.chunk.css.map": "/zipper/static/css/main.d9315f40.chunk.css.map",
@@ -20,6 +20,6 @@
     "static/css/2.b4a16772.chunk.css",
     "static/js/2.968d9f77.chunk.js",
     "static/css/main.d9315f40.chunk.css",
-    "static/js/main.519578f3.chunk.js"
+    "static/js/main.bcad9b7a.chunk.js"
   ]
 }
