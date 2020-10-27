@@ -48,8 +48,8 @@ const MapDisplay = () => {
           },
           paint: {
             'line-color': '#fff',
-            'line-width': 2,
-            'line-opacity': 0.25,
+            'line-width': 3,
+            'line-opacity': 0.4,
           },
         });
         setMap(createdMap);
@@ -80,14 +80,7 @@ const MapDisplay = () => {
     }
   }, [map, bounds]);
 
-  return (
-    <div
-      ref={onSetDivRef}
-      style={{
-        height: '100%',
-      }}
-    ></div>
-  );
+  return <div ref={onSetDivRef} style={{ height: '100%' }}></div>;
 };
 
 export default MapDisplay;
