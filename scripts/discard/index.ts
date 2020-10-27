@@ -6,7 +6,7 @@ import pruneGraph from './prune-graph';
 import { CoordinateList } from './types';
 import fs from 'fs';
 
-const data = require(`${__dirname}/../../public/postnummer.min.json`);
+const data = require(`${__dirname}/../../data/postnummer.min.json`);
 
 const discard = (query: string, prefix: string): CoordinateList[] => {
   console.log(`Beginning ${query} / ${prefix} ...`);
